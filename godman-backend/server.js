@@ -7,6 +7,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Root Route (Health Check for Render)
+app.get('/', (req, res) => {
+  res.send('GODMAN Backend API is running successfully!');
+});
+
 // Email Transporter Configuration using Environment Variables
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -24,8 +29,8 @@ app.post('/api/send-otp', async (req, res) => {
   try {
     // Notify Admin of Registration Attempt
     await transporter.sendMail({
-      from: process.env.GMAIL_USER,
-      to: process.env.GMAIL_USER,
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
       subject: `GODMAN Registration Attempt: ${fullName}`,
       text: `New User Registration:\nName: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nRole: ${role}\nOTP Sent: ${generatedOtp}`
     });
@@ -44,8 +49,8 @@ app.post('/api/create-order', async (req, res) => {
 
   try {
     await transporter.sendMail({
-      from: process.env.GMAIL_USER,
-      to: process.env.GMAIL_USER,
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
       subject: `NEW ORDER RECIEVED [${bookingCode}]`,
       html: `
         <h3>New Order Placed on GODMAN Marketplace</h3>
