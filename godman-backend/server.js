@@ -11,7 +11,7 @@ app.use(express.json());
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.quinndaniel100@gmail.com,
+    user: process.env.EMAIL_USER,
     pass: process.env.algb helf hsfr ifmr
   }
 });
