@@ -1,0 +1,79 @@
+[
+  {
+    "id": 1,
+    "name": "Bespoke Royal Blue 3-Piece Suit",
+    "category": "Suits",
+    "subcategory": "Male Suits",
+    "price": 185000,
+    "artisan": "GODMAN Master Tailors",
+    "image": "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80",
+    "description": "Handcrafted 3-piece bespoke Italian wool suit with hand-stitched lapels.",
+    "sizes": ["38R", "40R", "42R", "44R", "Custom Bespoke"]
+  },
+  {
+    "id": 2,
+    "name": "Empress Double-Breasted Power Suit",
+    "category": "Suits",
+    "subcategory": "Female Suits",
+    "price": 160000,
+    "artisan": "GODMAN Women's Atelier",
+    "image": "https://images.unsplash.com/photo-1548142813-c348350df52b?auto=format&fit=crop&w=800&q=80",
+    "description": "Tailored double-breasted corporate suit designed for luxury female silhouette.",
+    "sizes": ["UK 8", "UK 10", "UK 12", "UK 14", "Custom Fitting"]
+  },
+  {
+    "id": 3,
+    "name": "Royal Senator Kaftan with Embroidery",
+    "category": "Native Wears",
+    "subcategory": "Kaftans",
+    "price": 95000,
+    "artisan": "Heritage Native Crafts",
+    "image": "https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=800&q=80",
+    "description": "Premium Cashmere Senator Kaftan with intricate neckline embroidery.",
+    "sizes": ["Medium", "Large", "XL", "XXL", "Custom Measurements"]
+  },
+  {
+    "id": 4,
+    "name": "Elegance Luxury Leather Crossbody Bag",
+    "category": "Bags",
+    "subcategory": "Luxury Bags",
+    "price": 75000,
+    "artisan": "Lagos Leatherworks",
+    "image": "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80",
+    "description": "Full-grain genuine leather luxury shoulder bag with gold-plated buckles.",
+    "sizes": ["Standard Size"]
+  },
+  {
+    "id": 5,
+    "name": "Handcrafted Leather Oxford Dress Shoes",
+    "category": "Shoes",
+    "subcategory": "Male Shoes",
+    "price": 110000,
+    "artisan": "Royal Footwear Studio",
+    "image": "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&w=800&q=80",
+    "description": "Italian calfskin leather Oxford shoes with polished Goodyear welted sole.",
+    "sizes": ["EU 41", "EU 42", "EU 43", "EU 44", "EU 45"]
+  },
+  {
+    "id": 6,
+    "name": "Stiletto Leather Heel Pumps",
+    "category": "Shoes",
+    "subcategory": "Female Shoes",
+    "price": 85000,
+    "artisan": "Sole Elegance",
+    "image": "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=800&q=80",
+    "description": "Handcrafted pointed-toe leather heels for high-fashion occasions.",
+    "sizes": ["EU 37", "EU 38", "EU 39", "EU 40", "EU 41"]
+  },
+  {
+    "id": 7,
+    "name": "Luxury French Cuff Dress Shirt",
+    "category": "Male Shirts",
+    "subcategory": "Formal Shirts",
+    "price": 45000,
+    "artisan": "GODMAN Shirtmakers",
+    "image": "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80",
+    "description": "100% Egyptian Cotton formal dress shirt with cufflink wrists.",
+    "sizes": ["15.5 Collar", "16 Collar", "16.5 Collar", "17 Collar"]
+  }
+]
