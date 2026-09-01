@@ -244,23 +244,23 @@ export default function App() {
       return;
     }
 
-    if (!window.PaystackPop) {
-      alert('Paystack SDK is loading. Please refresh the page.');
+    if (typeof window.PaystackPop === 'undefined') {
+      alert('Paystack SDK failed to load. Please refresh the page and try again.');
       return;
     }
 
     const handler = window.PaystackPop.setup({
-      key: 'pk_test_21b7fbbf9bf4c8cf2c874e3880672efe05af66f9',
+      key: 'pk_live_caef833e83b53e8ce75217d0a01dd6f7a734d03c', // Your Live Paystack Public Key
       email: user.email,
-      amount: totalCartPrice * 100,
+      amount: totalCartPrice * 100, // Converts Naira to Kobo
       currency: 'NGN',
-      callback: async (response) => {
+      callback: function(response) {
         const bookingCode = `GM-ORD-${Math.floor(100000 + Math.random() * 900000)}`;
         alert(`Payment Successful! Booking Code: ${bookingCode} (Ref: ${response.reference})`);
         setCart([]);
         setIsCartOpen(false);
       },
-      onClose: () => {
+      onClose: function() {
         alert('Transaction cancelled.');
       }
     });
@@ -648,7 +648,7 @@ const styles = {
   qtyBtn: { backgroundColor: '#262626', color: '#fff', border: 'none', width: '22px', height: '22px', borderRadius: '4px', cursor: 'pointer' },
   removeBtn: { backgroundColor: 'transparent', border: 'none', cursor: 'pointer' },
   cartFooter: { borderTop: '1px solid #262626', paddingTop: '15px' },
-  totalRow: { display: 'flex', justifyContent: 'space-between', fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '12px' },
-  checkoutBtn: { width: '100%', backgroundColor: '#d4af37', color: '#000', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.95rem' },
-  footer: { textAlign: 'center', padding: '30px 20px', borderTop: '1px solid #1f1f1f', marginTop: '40px', backgroundColor: '#0a0a0a' }
+  totalRow: { display: 'flex', justifyContent: 'space-between', marginBottom: '15px', fontWeight: 'bold' },
+  checkoutBtn: { width: '100%', padding: '12px', backgroundColor: '#d4af37', color: '#000', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.95rem' },
+  footer: { textAlign: 'center', padding: '30px 20px', backgroundColor: '#000', borderTop: '1px solid #1a1a1a', marginTop: '40px' }
 };
