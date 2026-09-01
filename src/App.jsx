@@ -29,8 +29,12 @@ export default function App() {
     phone: '',
     address: '',
     password: '',
-    nin: ''
+    nin: '',
+    otp: ''
   });
+
+  const [otpSent, setOtpSent] = useState(false);
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
 
   // Product Reviews State
   const [reviews, setReviews] = useState({});
@@ -64,9 +68,43 @@ export default function App() {
     setAuthForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // REGISTER USER TO BACKEND
+  // REQUEST OTP FROM BACKEND
+  const handleSendOtp = async () => {
+    if (!authForm.email) {
+      alert('Please enter your email address first.');
+      return;
+    }
+
+    setIsSendingOtp(true);
+    try {
+      const response = await fetch('https://godman-backend.onrender.com/api/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: authForm.email })
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setOtpSent(true);
+        alert(`Verification code sent! Please check ${authForm.email}`);
+      } else {
+        alert(data.message || 'Failed to send verification code.');
+      }
+    } catch (err) {
+      alert('Could not connect to backend server. Make sure server is online.');
+    } finally {
+      setIsSendingOtp(false);
+    }
+  };
+
+  // REGISTER USER TO BACKEND WITH OTP
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
+    if (!otpSent) {
+      alert('Please click "Send Verification Code" to verify your email first.');
+      return;
+    }
+
     try {
       const response = await fetch('https://godman-backend.onrender.com/api/register', {
         method: 'POST',
@@ -78,27 +116,17 @@ export default function App() {
       if (data.success) {
         setUser(data.user);
         setIsAuthOpen(false);
-        alert(`Account Created & Saved to Database! Welcome to GODMAN, ${data.user.fullName}`);
+        setOtpSent(false);
+        alert(`Account Verified & Created! Welcome to GODMAN, ${data.user.fullName}`);
       } else {
         alert(data.message || 'Registration failed.');
       }
     } catch (err) {
-      // Local Fallback if server isn't reachable during test
-      const generatedVendorId = selectedRole === 'vendor' ? `GM-VND-${Math.floor(10000 + Math.random() * 90000)}` : null;
-      setUser({
-        fullName: authForm.fullName,
-        brandName: authForm.brandName,
-        email: authForm.email,
-        role: selectedRole,
-        vendorId: generatedVendorId,
-        isVerified: true
-      });
-      setIsAuthOpen(false);
-      alert(`Registered locally! Welcome, ${authForm.fullName}`);
+      alert('Could not connect to backend server.');
     }
   };
 
-  // LOGIN USER WITH PASSWORD
+  // LOGIN USER WITH EMAIL
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -114,10 +142,10 @@ export default function App() {
         setIsAuthOpen(false);
         alert(`Welcome back, ${data.user.fullName}!`);
       } else {
-        alert(data.message || 'Invalid email or password.');
+        alert(data.message || 'User profile not found.');
       }
     } catch (err) {
-      alert('Could not connect to Node server. Starting local session.');
+      alert('Could not connect to server. Starting local session.');
       setUser({ fullName: authForm.email.split('@')[0], email: authForm.email, role: 'buyer' });
       setIsAuthOpen(false);
     }
@@ -250,9 +278,9 @@ export default function App() {
     }
 
     const handler = window.PaystackPop.setup({
-      key: 'pk_live_caef833e83b53e8ce75217d0a01dd6f7a734d03c', // Your Live Paystack Public Key
+      key: 'pk_live_caef833e83b53e8ce75217d0a01dd6f7a734d03c',
       email: user.email,
-      amount: totalCartPrice * 100, // Converts Naira to Kobo
+      amount: totalCartPrice * 100,
       currency: 'NGN',
       callback: function(response) {
         const bookingCode = `GM-ORD-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -424,7 +452,7 @@ export default function App() {
         </div>
       </main>
 
-      {/* AUTHENTICATION MODAL (REGISTER & LOGIN WITH PASSWORD) */}
+      {/* AUTHENTICATION MODAL (REGISTER WITH OTP & LOGIN) */}
       {isAuthOpen && (
         <div style={styles.cartOverlay} onClick={() => setIsAuthOpen(false)}>
           <div style={styles.adminModal} onClick={(e) => e.stopPropagation()}>
@@ -461,7 +489,20 @@ export default function App() {
 
                 <input type="text" name="fullName" placeholder="Full Name" required style={styles.formInput} value={authForm.fullName} onChange={handleAuthInputChange} />
                 <input type="text" name="brandName" placeholder={selectedRole === 'vendor' ? "Brand Name" : "Display Name"} required style={styles.formInput} value={authForm.brandName} onChange={handleAuthInputChange} />
-                <input type="email" name="email" placeholder="Email Address" required style={styles.formInput} value={authForm.email} onChange={handleAuthInputChange} />
+                
+                {/* Email Input with Send OTP Button */}
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <input type="email" name="email" placeholder="Email Address" required style={{ ...styles.formInput, flexGrow: 1 }} value={authForm.email} onChange={handleAuthInputChange} />
+                  <button type="button" onClick={handleSendOtp} disabled={isSendingOtp} style={styles.otpBtn}>
+                    {isSendingOtp ? 'Sending...' : otpSent ? 'Resend Code' : 'Send Code'}
+                  </button>
+                </div>
+
+                {/* Verification OTP Field (Shown after Code is Sent) */}
+                {otpSent && (
+                  <input type="text" name="otp" placeholder="Enter 6-Digit Email Code" required style={{ ...styles.formInput, border: '1px solid #d4af37' }} value={authForm.otp} onChange={handleAuthInputChange} />
+                )}
+
                 <input type="tel" name="phone" placeholder="Phone Number" required style={styles.formInput} value={authForm.phone} onChange={handleAuthInputChange} />
                 <input type="password" name="password" placeholder="Create Password" required style={styles.formInput} value={authForm.password} onChange={handleAuthInputChange} />
                 <input type="text" name="address" placeholder={selectedRole === 'vendor' ? "Business Address" : "Home Address"} required style={styles.formInput} value={authForm.address} onChange={handleAuthInputChange} />
@@ -470,7 +511,7 @@ export default function App() {
                   <input type="text" name="nin" placeholder="National Identification Number (NIN)" required style={styles.formInput} value={authForm.nin} onChange={handleAuthInputChange} />
                 )}
 
-                <button type="submit" style={styles.checkoutBtn}>Create & Save Account</button>
+                <button type="submit" style={styles.checkoutBtn}>Verify Code & Complete Sign Up</button>
               </form>
             ) : (
               <form onSubmit={handleLoginSubmit} style={styles.adminForm}>
@@ -637,6 +678,7 @@ const styles = {
   commissionBanner: { backgroundColor: '#1a180e', border: '1px solid #d4af37', color: '#d4af37', padding: '10px', borderRadius: '6px', fontSize: '0.8rem', marginTop: '12px' },
   adminForm: { display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '15px' },
   formInput: { padding: '10px 12px', borderRadius: '6px', backgroundColor: '#1a1a1a', border: '1px solid #333', color: '#fff', outline: 'none' },
+  otpBtn: { backgroundColor: '#d4af37', color: '#000', border: 'none', borderRadius: '6px', padding: '0 12px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.8rem', whiteSpace: 'nowrap' },
   cartHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #262626', paddingBottom: '12px' },
   closeBtn: { backgroundColor: 'transparent', border: 'none', color: '#fff', fontSize: '1.4rem', cursor: 'pointer' },
   cartBody: { flexGrow: 1, overflowY: 'auto', padding: '15px 0' },
