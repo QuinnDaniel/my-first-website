@@ -68,7 +68,7 @@ export default function App() {
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://godman-backend.onrender.com/api/login', {
+      const response = await fetch('https://godman-backend.onrender.com/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...authForm, role: selectedRole })
@@ -102,7 +102,7 @@ export default function App() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch('https://godman-backend.onrender.com/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: authForm.email, password: authForm.password })
@@ -648,7 +648,7 @@ const styles = {
   qtyBtn: { backgroundColor: '#262626', color: '#fff', border: 'none', width: '22px', height: '22px', borderRadius: '4px', cursor: 'pointer' },
   removeBtn: { backgroundColor: 'transparent', border: 'none', cursor: 'pointer' },
   cartFooter: { borderTop: '1px solid #262626', paddingTop: '15px' },
-  totalRow: { display: 'flex', justifyContent: 'space-between', fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '15px' },
-  checkoutBtn: { width: '100%', backgroundColor: '#d4af37', color: '#000', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: 'bold', fontSize: '0.95rem', cursor: 'pointer' },
-  footer: { textAlign: 'center', padding: '30px', borderTop: '1px solid #222', backgroundColor: '#0a0a0a', color: '#666', marginTop: '40px' }
+  totalRow: { display: 'flex', justifyContent: 'space-between', fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '12px' },
+  checkoutBtn: { width: '100%', backgroundColor: '#d4af37', color: '#000', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.95rem' },
+  footer: { textAlign: 'center', padding: '30px 20px', borderTop: '1px solid #1f1f1f', marginTop: '40px', backgroundColor: '#0a0a0a' }
 };
