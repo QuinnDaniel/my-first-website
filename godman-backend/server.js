@@ -105,5 +105,27 @@ app.post('/api/login', (req, res) => {
   res.json({ success: true, user });
 });
 
+// ROUTE 4: Instant Order Email Notification to Admin
+app.post('/api/order-notification', async (req, res) => {
+  const { customerEmail, customerName, items, totalAmount, bookingCode, reference } = req.body;
+
+  const itemDetails = items.map(i => `- ${i.name} (Qty: ${i.quantity || 1}, Size: ${i.selectedSize || 'N/A'}) - ₦${i.price?.toLocaleString()}`).join('\n');
+
+  const mailOptions = {
+    from: '"GODMAN Orders" <quinndaniel100@gmail.com>',
+    to: 'quinndaniel100@gmail.com',
+    subject: `🚨 NEW ORDER RECEIVED: ${bookingCode}`,
+    text: `You have received a new paid order on GODMAN!\n\nCustomer: ${customerName} (${customerEmail})\nBooking Code: ${bookingCode}\nPaystack Ref: ${reference}\nTotal Paid: ₦${totalAmount?.toLocaleString()}\n\nItems Purchased:\n${itemDetails}`
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ success: true, message: 'Order email alert sent successfully.' });
+  } catch (error) {
+    console.error('Order email error:', error);
+    res.status(500).json({ success: false, error: 'Failed to send order notification.' });
+  }
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
