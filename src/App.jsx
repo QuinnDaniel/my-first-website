@@ -158,6 +158,7 @@ export default function App() {
     alert('Bank Payout details saved successfully!');
   };
 
+  // UPDATED: ADD REVIEW FUNCTION
   const handleAddReview = (productId) => {
     if (!user) {
       alert('Security Policy: Only registered members can leave feedback and reviews.');
@@ -260,6 +261,7 @@ export default function App() {
     });
   };
 
+  // UPDATED: TRIGGER CHECKOUT WITH INSTANT ADMIN EMAIL NOTIFICATION
   const triggerCheckout = () => {
     if (!user) {
       alert('Security Policy: Only registered users can proceed to checkout.');
@@ -284,6 +286,21 @@ export default function App() {
       currency: 'NGN',
       callback: function(response) {
         const bookingCode = `GM-ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+
+        // Send instant order alert to backend
+        fetch('https://godman-backend.onrender.com/api/order-notification', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customerEmail: user.email,
+            customerName: user.fullName || user.brandName,
+            items: cart,
+            totalAmount: totalCartPrice,
+            bookingCode: bookingCode,
+            reference: response.reference
+          })
+        }).catch(err => console.error('Failed to notify backend:', err));
+
         alert(`Payment Successful! Booking Code: ${bookingCode} (Ref: ${response.reference})`);
         setCart([]);
         setIsCartOpen(false);
@@ -675,22 +692,22 @@ const styles = {
   cartOverlay: { position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0, 0, 0, 0.85)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 },
   cartModal: { position: 'fixed', right: 0, top: 0, width: '100%', maxWidth: '400px', backgroundColor: '#121212', height: '100%', display: 'flex', flexDirection: 'column', padding: '20px', boxShadow: '-5px 0 25px rgba(0,0,0,0.5)' },
   adminModal: { width: '90%', maxWidth: '480px', backgroundColor: '#121212', borderRadius: '12px', border: '1px solid #333', padding: '25px' },
-  commissionBanner: { backgroundColor: '#1a180e', border: '1px solid #d4af37', color: '#d4af37', padding: '10px', borderRadius: '6px', fontSize: '0.8rem', marginTop: '12px' },
+  commissionBanner: { backgroundColor: '#1a180e', border: '1px solid #d4af37', color: '#d4af37', padding: '10px 14px', borderRadius: '8px', fontSize: '0.8rem', marginBottom: '15px' },
   adminForm: { display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '15px' },
-  formInput: { padding: '10px 12px', borderRadius: '6px', backgroundColor: '#1a1a1a', border: '1px solid #333', color: '#fff', outline: 'none' },
-  otpBtn: { backgroundColor: '#d4af37', color: '#000', border: 'none', borderRadius: '6px', padding: '0 12px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.8rem', whiteSpace: 'nowrap' },
-  cartHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #262626', paddingBottom: '12px' },
-  closeBtn: { backgroundColor: 'transparent', border: 'none', color: '#fff', fontSize: '1.4rem', cursor: 'pointer' },
+  formInput: { padding: '10px', borderRadius: '6px', border: '1px solid #333', backgroundColor: '#1a1a1a', color: '#fff', outline: 'none' },
+  otpBtn: { backgroundColor: '#d4af37', color: '#000', border: 'none', padding: '0 12px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.8rem', whiteSpace: 'nowrap' },
+  cartHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #222', paddingBottom: '10px' },
+  closeBtn: { backgroundColor: 'transparent', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer' },
   cartBody: { flexGrow: 1, overflowY: 'auto', padding: '15px 0' },
-  emptyCart: { color: '#777', textAlign: 'center', marginTop: '40px' },
-  cartItem: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', backgroundColor: '#1a1a1a', padding: '10px', borderRadius: '8px' },
-  cartThumb: { width: '55px', height: '55px', objectFit: 'cover', borderRadius: '6px' },
+  cartItem: { display: 'flex', gap: '12px', alignItems: 'center', borderBottom: '1px solid #222', paddingBottom: '12px', marginBottom: '12px' },
+  cartThumb: { width: '50px', height: '50px', objectFit: 'cover', borderRadius: '6px' },
   cartItemInfo: { flexGrow: 1 },
-  qtyControls: { display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px' },
-  qtyBtn: { backgroundColor: '#262626', color: '#fff', border: 'none', width: '22px', height: '22px', borderRadius: '4px', cursor: 'pointer' },
-  removeBtn: { backgroundColor: 'transparent', border: 'none', cursor: 'pointer' },
-  cartFooter: { borderTop: '1px solid #262626', paddingTop: '15px' },
-  totalRow: { display: 'flex', justifyContent: 'space-between', marginBottom: '15px', fontWeight: 'bold' },
-  checkoutBtn: { width: '100%', padding: '12px', backgroundColor: '#d4af37', color: '#000', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.95rem' },
-  footer: { textAlign: 'center', padding: '30px 20px', backgroundColor: '#000', borderTop: '1px solid #1a1a1a', marginTop: '40px' }
+  qtyControls: { display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' },
+  qtyBtn: { backgroundColor: '#222', border: '1px solid #444', color: '#fff', width: '22px', height: '22px', borderRadius: '4px', cursor: 'pointer' },
+  removeBtn: { backgroundColor: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1rem' },
+  cartFooter: { borderTop: '1px solid #222', paddingTop: '15px' },
+  totalRow: { display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '15px' },
+  checkoutBtn: { width: '100%', backgroundColor: '#d4af37', color: '#000', border: 'none', padding: '12px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.95rem' },
+  emptyCart: { textAlign: 'center', color: '#666', marginTop: '40px' },
+  footer: { textAlign: 'center', padding: '30px 20px', borderTop: '1px solid #222', marginTop: '40px', backgroundColor: '#0a0a0a' }
 };
